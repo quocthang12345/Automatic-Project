@@ -1,12 +1,29 @@
-node {
-  try {
-    stage('Build') {
-    echo "The number of stage is ${currentBuild.number} and branch is ${env.BUILD_NUMBER}"
-  }
-  } catch (e) {
-    echo "Error Exception"
-    throw e
-  } finally {
-    echo "status is ${currentBuild.currentResult}"
-  }
+pipeline {
+    agent {
+      docker {
+          image 'node:16.13.1-alpine'
+          reuseNode true
+      }
+    }
+    stages {
+
+      stage('Build') {
+          steps {
+            bat "node --version"
+            bat "ng --version"
+            bat "ng build"
+            archiveArtifacts artifacts: '**/dist/automatic/*.*', fingerprint: true
+          }
+      }
+      stage('Test') {
+          steps {
+            bat "echo 'test'"
+          }
+      }
+      stage('Deploy') {
+          steps {
+            bat "echo 'deploy'"
+          }
+      }
+    }
 }
