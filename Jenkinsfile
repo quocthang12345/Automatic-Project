@@ -5,7 +5,6 @@ pipeline {
       agent {
         dockerContainer {
           image 'node:16.13.1-alpine'
-          reuseNode true
         }
       }
       steps {
