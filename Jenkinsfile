@@ -1,29 +1,29 @@
 pipeline {
-    agent {
-      docker {
+  agent any
+  stages {
+    stage('Build') {
+      agent {
+        dockerContainer {
           image 'node:16.13.1-alpine'
           reuseNode true
+        }
+      }
+      steps {
+        bat "node --version"
+        bat "ng --version"
+        bat "ng build"
+        archiveArtifacts artifacts: '**/dist/automatic/*.*', fingerprint: true
       }
     }
-    stages {
-
-      stage('Build') {
-          steps {
-            bat "node --version"
-            bat "ng --version"
-            bat "ng build"
-            archiveArtifacts artifacts: '**/dist/automatic/*.*', fingerprint: true
-          }
-      }
-      stage('Test') {
-          steps {
-            bat "echo 'test'"
-          }
-      }
-      stage('Deploy') {
-          steps {
-            bat "echo 'deploy'"
-          }
-      }
+    stage('Test') {
+        steps {
+          bat "echo 'test'"
+        }
     }
+    stage('Deploy') {
+        steps {
+          bat "echo 'deploy'"
+        }
+    }
+  }
 }
